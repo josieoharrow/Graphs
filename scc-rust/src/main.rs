@@ -1,16 +1,19 @@
+#![allow(unused)]
 use std::io::BufReader;
 use std::io::BufRead;
 use std::io;
+use std::io::prelude::*;
+use std::fs::File;
 use std::fs;
 use petgraph::graph::{DiGraph};
-use petgraph::dot::{Dot};
+use petgraph::dot::{Dot, Config};
 use petgraph::algo::{tarjan_scc, is_cyclic_directed, dijkstra};
 
-fn main() {
+fn main() -> std::io::Result<()> {
     println!("\n\n\n\n\n\n\n\n");
 
 
-    let contents = fs::read_to_string("../reductions.csv")
+    let contents = fs::read_to_string("../../reductions.csv")
         .expect("Something went wrong reading the file");
 
     let row_array: Vec<&str> = contents.split("\n").collect();
@@ -53,7 +56,7 @@ fn main() {
 
             println!("             Found SCC!");
             tree = true;
-            //To get the dot file, use Dot::new(&g)
+            //To get the dot file, use 
         }
         pop_val = scc.pop();
     }
@@ -62,4 +65,9 @@ fn main() {
     }
     println!("\n\n\n\n\n\n\n\n");
 
+    //Create .dot file
+    
+    let mut file = File::create("graph.dot")?;
+    file.write_all(format!("{:?}", Dot::with_config(&g, &[Config::EdgeNoLabel])).as_bytes())?;
+    Ok(())
 }
