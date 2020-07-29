@@ -3,9 +3,12 @@ use std::io::BufRead;
 use std::io;
 use std::fs;
 use petgraph::graph::{DiGraph};
+use petgraph::dot::{Dot};
 use petgraph::algo::{tarjan_scc, is_cyclic_directed, dijkstra};
 
 fn main() {
+    println!("\n\n\n\n\n\n\n\n");
+
 
     let contents = fs::read_to_string("../Reductions.csv")
         .expect("Something went wrong reading the file");
@@ -34,19 +37,29 @@ fn main() {
     }
 
     let num_nodes = 21;
+    let mut tree = false;
 
     let mut scc = tarjan_scc(&g);
-    let mut popVal = scc.pop();
-    while popVal != None {
-        let unwrapped = popVal.unwrap();
+    let mut pop_val = scc.pop();
+    while pop_val != None {
+        let unwrapped = pop_val.unwrap();
+
+        //Check for scc, output yes if there is one and list it.
         if num_nodes == unwrapped.len() {
+
             for i in unwrapped {
                 println!("{}", g[i]);
             }
-            println!("Found SCC!");
+
+            println!("             Found SCC!");
+            tree = true;
+            //To get the dot file, use Dot::new(&g)
         }
-        popVal = scc.pop();
+        pop_val = scc.pop();
     }
-      //Check for scc, output yes or no and if there is one, list it.
-      // plot the scc
+    if tree == false {
+        println!("               No SCC was found :(");
+    }
+    println!("\n\n\n\n\n\n\n\n");
+
 }

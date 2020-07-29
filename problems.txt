@@ -1,0 +1,21 @@
+Exact Cover
+Directed Hamiltonian Circuit
+Node Cover
+3-Dimensional Matching
+Set Packing
+Clique Cover
+Hitting Set
+SAT
+Clique
+Chromatic Number
+Sequencing
+Feedback Arc Set
+Feedback Node Set
+Steiner Tree
+Knapsack
+Set Covering
+3SAT
+0-1 Integer Programming
+Partition
+Max Cut
+Undirected Hamiltonian Circuit
