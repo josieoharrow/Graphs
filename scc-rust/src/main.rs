@@ -10,7 +10,7 @@ fn main() {
     println!("\n\n\n\n\n\n\n\n");
 
 
-    let contents = fs::read_to_string("../Reductions.csv")
+    let contents = fs::read_to_string("../reductions.csv")
         .expect("Something went wrong reading the file");
 
     let row_array: Vec<&str> = contents.split("\n").collect();
