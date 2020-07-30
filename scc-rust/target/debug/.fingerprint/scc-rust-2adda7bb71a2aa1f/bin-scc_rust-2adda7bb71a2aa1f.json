@@ -1,0 +1,1 @@
+{"rustc":13355374433309949680,"features":"[]","target":4488213901534930326,"profile":14996655781355331481,"path":1036222786711178230,"deps":[[10490226805635369355,"petgraph",false,12340311431971803733]],"local":[{"CheckDepInfo":{"dep_info":"debug/.fingerprint/scc-rust-2adda7bb71a2aa1f/dep-bin-scc_rust-2adda7bb71a2aa1f"}}],"rustflags":[],"metadata":986864233934349409}

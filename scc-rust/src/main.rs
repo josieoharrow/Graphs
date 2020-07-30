@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     println!("\n\n\n\n\n\n\n\n");
 
 
-    let contents = fs::read_to_string("../../reductions.csv")
+    let contents = fs::read_to_string("../../21_Complete_Data/reductions.csv")
         .expect("Something went wrong reading the file");
 
     let row_array: Vec<&str> = contents.split("\n").collect();
@@ -66,8 +66,7 @@ fn main() -> std::io::Result<()> {
     println!("\n\n\n\n\n\n\n\n");
 
     //Create .dot file
-    
-    let mut file = File::create("graph.dot")?;
+    let mut file = File::create("../../21_Complete_Data/graph.dot")?;
     file.write_all(format!("{:?}", Dot::with_config(&g, &[Config::EdgeNoLabel])).as_bytes())?;
     Ok(())
 }
