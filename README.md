@@ -29,7 +29,8 @@ Some useful things to add:
 ```
 1. Install Ruby 
 ```bash 
-brew install ruby```
+brew install ruby
+```
 2. Install [Rust](https://www.rust-lang.org/learn/get-started)
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
