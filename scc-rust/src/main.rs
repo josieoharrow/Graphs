@@ -15,8 +15,12 @@ fn main() -> std::io::Result<()> {
 
     let contents = fs::read_to_string("../../21_Complete_Data/reductions.csv")
         .expect("Something went wrong reading the file");
+    let tags = fs::read_to_string("../../21_Complete_Data/problems.txt")
+        .expect("woops");
 
     let row_array: Vec<&str> = contents.split("\n").collect();
+    let tags: Vec<&str> = tags.split("\n").collect();
+
     let mut g = DiGraph::<String, String>::new();
 
     let mut row_count = 1;
@@ -25,11 +29,13 @@ fn main() -> std::io::Result<()> {
         let columns_length = columns.len();
         let mut col_count = 1;
         for col in columns {
+            let row_tag = &tags[row_count - 1].to_string();
+            let col_tag = &tags[col_count - 1].to_string();
             if row_count == 1 {
-                g.add_node(col_count.to_string());
+                g.add_node(col_tag.to_string());
             }
-            let row_index = g.node_indices().find(|i| g[*i] == row_count.to_string()).unwrap();
-            let col_index = g.node_indices().find(|i| g[*i] == col_count.to_string()).unwrap();
+            let row_index = g.node_indices().find(|i| g[*i] == row_tag.to_string()).unwrap();
+            let col_index = g.node_indices().find(|i| g[*i] == col_tag.to_string()).unwrap();
 
             if col.trim() == "1" {
                 g.add_edge(row_index, col_index, format!("{}{}", row_count.to_string(), col_count.to_string()));//(row_count).to_string());
@@ -49,21 +55,24 @@ fn main() -> std::io::Result<()> {
 
         //Check for scc, output yes if there is one and list it.
         if num_nodes == unwrapped.len() {
-
+            let mut count = 1;
             for i in unwrapped {
+                println!("{}", &tags[count - 1].to_string());
+
                 println!("{}", g[i]);
+                count = count + 1;
             }
 
-            println!("             Found SCC!");
+            println!("~~~~~~~~~~~~~~ Found SCC! ~~~~~~~~~~~~~~");
             tree = true;
             //To get the dot file, use 
         }
         pop_val = scc.pop();
     }
     if tree == false {
-        println!("               No SCC was found :(");
+        println!("No SCC was found :(");
     }
-    println!("\n\n\n\n\n\n\n\n");
+    println!("\n");
 
     //Create .dot file
     let mut file = File::create("../../21_Complete_Data/graph.dot")?;
