@@ -21,3 +21,20 @@ Some useful things to add:
 - Better labels for the graph nodes
 - Visualization on the graph for which edges we added, and which were from Karp
 - More project organization, this project is somewhat of an engineering mess currently and could use some better organization if anyone is going to spend time on it.
+
+## Setup (Mac Terminal)
+0. Install Homebrew!
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+```
+1. Install Ruby 
+```bash 
+brew install ruby
+```
+2. Install [Rust](https://www.rust-lang.org/learn/get-started)
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+3. Install [GraphVis](https://graphviz.org/) to deploy .dot files for graph
+4. Install ghostscript using apt-get or homebrew.
+```brew install ghostscript```
