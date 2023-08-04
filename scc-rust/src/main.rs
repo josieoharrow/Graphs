@@ -5,23 +5,59 @@ use std::io;
 use std::io::prelude::*;
 use std::fs::File;
 use std::fs;
+use petgraph::Graph;
 use petgraph::graph::{DiGraph};
 use petgraph::dot::{Dot, Config};
 use petgraph::algo::{tarjan_scc, is_cyclic_directed, dijkstra};
+use petgraph::visit::EdgeRef;
+use petgraph::visit::IntoEdgeReferences;
+use petgraph::visit::IntoNodeReferences;
+
+#[derive(Debug)]
+#[derive(PartialEq)]
+enum ReductionSource {
+    
+    Original,
+    Karp,
+    Outside
+}
+
+fn edge_attributes<G>(graph: G, edge: G::EdgeRef) -> String where G: IntoEdgeReferences, G::EdgeWeight: PartialEq<ReductionSource>,
+{
+    //do something to color code here.
+
+    if (*(EdgeRef::weight(&edge)) == ReductionSource::Original) {
+        return "color = \"black\"".to_string();
+
+    } else if (*(EdgeRef::weight(&edge)) == ReductionSource::Karp) {
+        return "color = \"deeppink\"".to_string();
+    } else if (*(EdgeRef::weight(&edge)) == ReductionSource::Outside) {
+        return "color = \"palegreen4\"".to_string();
+    } else {
+        return "".to_string();
+    }
+}
+
+fn empty_string<G>(graph: G, node: G::NodeRef) -> String where G: IntoNodeReferences {
+    return "".to_string();
+}
 
 fn main() -> std::io::Result<()> {
+
+
     println!("\n\n\n\n\n\n\n\n");
 
 
-    let contents = fs::read_to_string("../../21_Complete_Data/reductions.csv")
+    let contents = fs::read_to_string("../21_Complete_Data/reductions.csv")
         .expect("Something went wrong reading the file");
-    let tags = fs::read_to_string("../../21_Complete_Data/problems.txt")
+    let tags = fs::read_to_string("../21_Complete_Data/problems.txt")
         .expect("woops");
 
     let row_array: Vec<&str> = contents.split("\n").collect();
     let tags: Vec<&str> = tags.split("\n").collect();
 
-    let mut g = DiGraph::<String, String>::new();
+    let mut g: petgraph::Graph<String, ReductionSource> = DiGraph::<String, ReductionSource>::new();
+    //let mut g: petgraph::Graph<String, i32> = DiGraph::<String, i32>::new();
 
     let mut row_count = 1;
     for row in row_array {
@@ -37,8 +73,13 @@ fn main() -> std::io::Result<()> {
             let row_index = g.node_indices().find(|i| g[*i] == row_tag.to_string()).unwrap();
             let col_index = g.node_indices().find(|i| g[*i] == col_tag.to_string()).unwrap();
 
-            if col.trim() == "1" {
-                g.add_edge(row_index, col_index, format!("{}{}", row_count.to_string(), col_count.to_string()));//(row_count).to_string());
+            let reduction_value: &str = col.trim();
+            if reduction_value == "1" {
+                g.add_edge(row_index, col_index, ReductionSource::Original);
+            } else if reduction_value == "2" {
+                g.add_edge(row_index, col_index, ReductionSource::Karp);
+            } else if reduction_value == "3" {
+                g.add_edge(row_index, col_index, ReductionSource::Outside);
             }
             col_count += 1;
         }
@@ -75,7 +116,9 @@ fn main() -> std::io::Result<()> {
     println!("\n");
 
     //Create .dot file
-    let mut file = File::create("../../21_Complete_Data/graph.dot")?;
-    file.write_all(format!("{:?}", Dot::with_config(&g, &[Config::EdgeNoLabel])).as_bytes())?;
+    let mut file = File::create("../21_Complete_Data/graph.dot")?;
+    //file.write_all(format!("{:?}", Dot::new(&g)).as_bytes())?;
+    //Uncomment below to have unlabeled edges.
+    file.write_all(format!("{:?}", Dot::with_attr_getters(&g, &[Config::EdgeNoLabel], &edge_attributes, &empty_string)).as_bytes())?;
     Ok(())
 }

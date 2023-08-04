@@ -1,0 +1,3 @@
+[submodule "petgraph"]
+	path = petgraph
+	url = https://github.com/josieoharrow/petgraph

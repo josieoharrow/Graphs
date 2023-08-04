@@ -10,8 +10,13 @@ The project code is divided into two main sections, maintaining the reductions d
 ### Reductions Data
 Data containing problems to reduce is in problems.txt. Data containing the reductions is in reductions.csv (rows are reduced to columns). Because csv is easier to parse but harder to edit and upkeep, I wrote a helper script addReduction.rb to maintain the csv. I could use another one (removeReduction).
 
+1 means original reduction. A value of 2 means reduction due to Karp, and 3 means reduction beyond in the literature. 0 means no reduction.
+
 ### Working with the graph
-The main.rs file is responsible for both checking for a cycle containing all nodes, and updating the graph.dot file to show any new reductions (should that happen immediateley after the addReduction step?) After that, the user is responsible for creating the .ps file using graphvis, and then using that however they see fit (for me, another coversion to pdf works fine).
+The main.rs file is responsible for both checking for a cycle containing all nodes, and updating the graph.dot file to show any new reductions. This does not happen on its own after addReduction. After that, the user is responsible for creating the .pdf file using graphvis.
+```bash
+dot -Tpdf [path to graph]/graph.dot -o [path to graph output]/graph.pdf
+```
 
 ## Add-Ons
 Some useful things to add:
@@ -35,6 +40,11 @@ brew install ruby
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-3. Install [GraphVis](https://graphviz.org/) to deploy .dot files for graph
+3. Install [GraphVis](https://graphviz.org/) to deploy .dot files for graph. If you are running from a Mac, run 
+```bash
+brew install graphviz
+```
 4. Install ghostscript using apt-get or homebrew.
-```brew install ghostscript```
+```bash 
+brew install ghostscript
+```
