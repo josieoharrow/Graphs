@@ -90,7 +90,7 @@ def addReduction()
     p "What are you reducing to?"
     to = processInput()
 
-    if @adjacencyMatrix[from - 1, to - 1] != 0
+    if @adjacencyMatrix[from - 1][to - 1] != 0
         p "That reduction is already included!"
     else 
         p "Is this reduction (1) original, (2) Due to Karp, or (3) from somewhere else in the literature?"
