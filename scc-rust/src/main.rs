@@ -45,8 +45,11 @@ fn empty_string<G>(graph: G, node: G::NodeRef) -> String where G: IntoNodeRefere
 
 fn main() -> std::io::Result<()> {
 
+    //************* CHANGE PARAMS HERE **********/
+    let mut sat_only: bool = true;
+    //*******************************************/
 
-    println!("\n\n\n\n\n\n\n\n");
+    //println!("\n\n\n\n\n\n\n\n");
 
 
     let contents = fs::read_to_string("../21_Complete_Data/reductions.csv")
@@ -96,27 +99,70 @@ fn main() -> std::io::Result<()> {
 
     let num_nodes = 21;
     let mut tree = false;
+    let mut biggest_longest: Option<Vec<petgraph::stable_graph::NodeIndex>> = None;
 
-    //Looking for longest simple path
-    //TODO: Find sat node with identifier
-    if (!sat_node.is_none()) {
-        let sat_node: petgraph::stable_graph::NodeIndex = sat_node.unwrap();
-        let mut ways: Vec<Vec<petgraph::stable_graph::NodeIndex>> = all_simple_paths::<Vec<_>, _>(&g, sat_node, sat_node, 1, None)
-            .collect::<Vec<_>>();
-        ways.sort_by(|b, a| b.len().cmp(&a.len()));
-        if (ways.len() > 0) {
-            let mut longest_simple_path: Vec<petgraph::stable_graph::NodeIndex> = ways.pop().unwrap();
-            println!("Longest simple path sat to sat {}", (longest_simple_path.len() - 1).to_string());
-            if (longest_simple_path.len() > 0) {
-                let mut node_index: Option<petgraph::stable_graph::NodeIndex> = longest_simple_path.pop();
-                while (!node_index.is_none()) {
-                    println!("{}", g.node_weight(node_index.unwrap()).unwrap().to_string());
-                    node_index = longest_simple_path.pop();
+    let mut longest = 0;
+
+
+    if (!sat_only) {
+        //let mut longest_simple_path: Option<Vec<petgraph::stable_graph::NodeIndex>> = ways.pop().unwrap();
+        //Looking for longest simple path
+        for current_node in g.node_indices() {
+            let mut ways: Vec<Vec<petgraph::stable_graph::NodeIndex>> = all_simple_paths::<Vec<_>, _>(&g, current_node, current_node, 1, None)
+                .collect::<Vec<_>>();
+            ways.sort_by(|b, a| b.len().cmp(&a.len()));
+            if (ways.len() > 0) {
+                //pop while same length here
+                let mut longest_simple_path: Vec<petgraph::stable_graph::NodeIndex> = ways.pop().unwrap();
+                //println!("Longest simple path containing {} is length: {}", g.node_weight(current_node).unwrap_or(&("Unknown".to_string())).to_string(), (longest_simple_path.len() - 1).to_string());
+                if (longest_simple_path.len() > 0) {
+                    if (longest_simple_path.len() > longest) {
+                        longest = longest_simple_path.len();
+                        biggest_longest = Some(longest_simple_path);
+                    }
+                /*  let mut node_index: Option<petgraph::stable_graph::NodeIndex> = longest_simple_path.pop();
+                    while (!node_index.is_none()) {
+                        println!("{}", g.node_weight(node_index.unwrap()).unwrap().to_string());
+                        node_index = longest_simple_path.pop();
+                    }*/
                 }
             }
         }
-    }
-    
+        if (biggest_longest.is_some()) {
+            let mut longest_simple_path: Vec<petgraph::stable_graph::NodeIndex> = biggest_longest.unwrap();
+            let mut node_index: Option<petgraph::stable_graph::NodeIndex> = longest_simple_path.pop();
+            while (!node_index.is_none()) {
+                println!("{}", g.node_weight(node_index.unwrap()).unwrap().to_string());
+                node_index = longest_simple_path.pop();
+            }
+        }
+    } else {
+        //SAT only.
+        if (!sat_node.is_none()) {
+            let sat_node: petgraph::stable_graph::NodeIndex = sat_node.unwrap();
+            let mut ways: Vec<Vec<petgraph::stable_graph::NodeIndex>> = all_simple_paths::<Vec<_>, _>(&g, sat_node, sat_node, 1, None)
+                .collect::<Vec<_>>();
+            ways.sort_by(|b, a| b.len().cmp(&a.len()));
+            if (ways.len() > 0) {
+                let mut longest_simple_path: Vec<petgraph::stable_graph::NodeIndex> = ways.pop().unwrap();
+                if (longest_simple_path.len() > 0) {
+
+                    let longest_length = longest_simple_path.len();
+                    while (longest_simple_path.len() == longest_length) {
+                    //Print out all longest circuits
+                        println!("*********** Longest simple path sat to sat {}", (longest_simple_path.len() - 1).to_string());
+                        let mut node_index: Option<petgraph::stable_graph::NodeIndex> = longest_simple_path.pop();
+                        while (!node_index.is_none()) {
+                            println!("{}", g.node_weight(node_index.unwrap()).unwrap().to_string());
+                            node_index = longest_simple_path.pop();
+                        }
+                        longest_simple_path = ways.pop().unwrap();
+                    }
+                }
+               
+            }
+        }
+    }    
    
     //Looking for scc. This code is weird. No reason to have a loop.
     // TODO: Fix this up. Whatever for now.
